@@ -72,9 +72,9 @@ function Coins({ toggleDark }: ICoinsProps) {
     const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
     return (
         <Container>
+            <button onClick={toggleDark} style={{marginTop:"10px"}}>Toggle Dark Mode</button>
             <Header>
             <Title>코인</Title>
-            <button onClick={toggleDark}>Toggle Dark Mode</button>
             </Header>
             {isLoading ? (
             <Loader>Now Loading...</Loader>

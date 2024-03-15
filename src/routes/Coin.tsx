@@ -157,7 +157,7 @@ function Coin({ isDark }: ICoinProps) {
     const loading = infoLoading || tickersLoading;
     return (
         <Container>
-            <button><Link to={`/`}>home</Link></button>
+            <button style={{marginTop:"10px"}}><Link to={`/`}>home</Link></button>
             <Header>
                 <Title>
                     {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
