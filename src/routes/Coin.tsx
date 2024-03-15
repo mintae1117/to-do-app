@@ -137,8 +137,11 @@ interface RouteParams {
 interface RouteState {
     state: { name: string };
 }
+interface ICoinProps {
+    isDark: boolean;
+}
 
-function Coin() {
+function Coin({ isDark }: ICoinProps) {
     const { coinId } = useParams() as unknown as RouteParams;
     const { state } = useLocation() as RouteState;
     const priceMatch = useMatch("/:coinId/price");
@@ -198,7 +201,7 @@ function Coin() {
             </Tab>
           </Tabs>
           <Routes>
-            <Route path= "chart" element={<Chart coinId={coinId} />} />
+            <Route path= "chart" element={<Chart isDark={isDark} coinId={coinId} />} />
             <Route path= "price" element={<Price />} />
           </Routes>
         </>
