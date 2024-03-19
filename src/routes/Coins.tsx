@@ -64,15 +64,11 @@ interface ICoin {
   type: string;
 }
 
-interface ICoinsProps {
-    toggleDark: () => void;
-}  
 
-function Coins({ toggleDark }: ICoinsProps) {
+function Coins() {
     const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
     return (
         <Container>
-            <button onClick={toggleDark} style={{marginTop:"10px"}}>Toggle Dark Mode</button>
             <Header>
             <Title>코인</Title>
             </Header>
@@ -80,7 +76,7 @@ function Coins({ toggleDark }: ICoinsProps) {
             <Loader>Now Loading...</Loader>
             ) : (
             <CoinsList>
-            {data?.slice(0, 100).map((coin) => (
+            {data?.slice(0, 50).map((coin) => (
             <Coin key={coin.id}>
                 <Link to={`/${coin.id}`} state={coin}>
                     <Img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`} />
