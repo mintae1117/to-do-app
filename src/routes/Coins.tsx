@@ -2,6 +2,8 @@ import { useQuery } from "react-query";
 import { Link } from "react-router-dom";
 import styled from "styled-components";
 import { fetchCoins } from "../api";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 const Container = styled.div`
   padding: 0px 20px;
@@ -66,28 +68,30 @@ interface ICoin {
 
 
 function Coins() {
-    const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
-    return (
-        <Container>
-            <Header>
-            <Title>코인</Title>
-            </Header>
-            {isLoading ? (
-            <Loader>Now Loading...</Loader>
-            ) : (
-            <CoinsList>
-            {data?.slice(0, 50).map((coin) => (
-            <Coin key={coin.id}>
-                <Link to={`/${coin.id}`} state={coin}>
-                    <Img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`} />
-                    {coin.name} &rarr;
-                    </Link>
-            </Coin>
-            ))}
-            </CoinsList>
-            )}
-        </Container>
-    );
+  const setterFn = useSetRecoilState(isDarkAtom);
+  const { isLoading, data } = useQuery<ICoin[]>("allCoins", fetchCoins);
+  return (
+    <Container>
+      <button style={{marginTop:"10px"}} onClick={() => setterFn(prev => !prev)}>Toggle Mode</button>
+        <Header>
+        <Title>코인</Title>
+        </Header>
+        {isLoading ? (
+        <Loader>Now Loading...</Loader>
+        ) : (
+        <CoinsList>
+        {data?.slice(0, 50).map((coin) => (
+        <Coin key={coin.id}>
+            <Link to={`/${coin.id}`} state={coin}>
+                <Img src={`https://cryptocurrencyliveprices.com/img/${coin.id}.png`} />
+                {coin.name} &rarr;
+                </Link>
+        </Coin>
+        ))}
+        </CoinsList>
+        )}
+    </Container>
+  );
 }
 
 export default Coins;

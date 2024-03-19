@@ -5,6 +5,8 @@ import Chart from "./Chart";
 import Price from "./Price";
 import { useQuery } from "react-query";
 import { fetchCoinInfo, fetchCoinTickers } from "../api";
+import { useSetRecoilState } from "recoil";
+import { isDarkAtom } from "../atoms";
 
 
 const Title = styled.h1`
@@ -140,72 +142,74 @@ interface RouteState {
 
 
 function Coin() {
-    const { coinId } = useParams() as unknown as RouteParams;
-    const { state } = useLocation() as RouteState;
-    const priceMatch = useMatch("/:coinId/price");
-    const chartMatch = useMatch("/:coinId/chart");
-    const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
-        ["info", coinId],
-        () => fetchCoinInfo(coinId)
-      );
-      const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
-        ["tickers", coinId],
-        () => fetchCoinTickers(coinId)
-      );
-    const loading = infoLoading || tickersLoading;
-    return (
-        <Container>
-            <button style={{marginTop:"10px"}}><Link to={`/`}>home</Link></button>
-            <Header>
-                <Title>
-                    {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
-                </Title>
-            </Header>
-            {loading ? (
-        <Loader>Loading...</Loader>
-      ) : (
-        <>
-          <Overview>
-            <OverviewItem>
-              <span>Rank:</span>
-              <span>{infoData?.rank}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Symbol:</span>
-              <span>${infoData?.symbol}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Open Source:</span>
-              <span>{infoData?.open_source ? "Yes" : "No"}</span>
-            </OverviewItem>
-          </Overview>
-          <Description>{infoData?.description}</Description>
-          <Overview>
-            <OverviewItem>
-              <span>Total Suply:</span>
-              <span>{tickersData?.total_supply}</span>
-            </OverviewItem>
-            <OverviewItem>
-              <span>Max Supply:</span>
-              <span>{tickersData?.max_supply}</span>
-            </OverviewItem>
-          </Overview>
-          <Tabs>
-            <Tab isActive={chartMatch !== null}>
-              <Link to={`/${coinId}/chart`}>Chart</Link>
-            </Tab>
-            <Tab isActive={priceMatch !== null}>
-              <Link to={`/${coinId}/price`}>Price</Link>
-            </Tab>
-          </Tabs>
-          <Routes>
-            <Route path= "chart" element={<Chart coinId={coinId} />} />
-            <Route path= "price" element={<Price />} />
-          </Routes>
-        </>
-      )}
-        </Container>
+  const setterFn = useSetRecoilState(isDarkAtom);
+  const { coinId } = useParams() as unknown as RouteParams;
+  const { state } = useLocation() as RouteState;
+  const priceMatch = useMatch("/:coinId/price");
+  const chartMatch = useMatch("/:coinId/chart");
+  const { isLoading: infoLoading, data: infoData } = useQuery<InfoData>(
+      ["info", coinId],
+      () => fetchCoinInfo(coinId)
     );
+    const { isLoading: tickersLoading, data: tickersData } = useQuery<PriceData>(
+      ["tickers", coinId],
+      () => fetchCoinTickers(coinId)
+    );
+  const loading = infoLoading || tickersLoading;
+  return (
+      <Container>
+          <button style={{marginTop:"10px"}} onClick={() => setterFn(prev => !prev)}>Toggle Mode</button>
+          <button style={{marginTop:"10px"}}><Link to={`/`}>home</Link></button>
+          <Header>
+              <Title>
+                  {state?.name ? state.name : loading ? "Loading..." : infoData?.name}
+              </Title>
+          </Header>
+          {loading ? (
+      <Loader>Loading...</Loader>
+    ) : (
+      <>
+        <Overview>
+          <OverviewItem>
+            <span>Rank:</span>
+            <span>{infoData?.rank}</span>
+          </OverviewItem>
+          <OverviewItem>
+            <span>Symbol:</span>
+            <span>${infoData?.symbol}</span>
+          </OverviewItem>
+          <OverviewItem>
+            <span>Open Source:</span>
+            <span>{infoData?.open_source ? "Yes" : "No"}</span>
+          </OverviewItem>
+        </Overview>
+        <Description>{infoData?.description}</Description>
+        <Overview>
+          <OverviewItem>
+            <span>Total Suply:</span>
+            <span>{tickersData?.total_supply}</span>
+          </OverviewItem>
+          <OverviewItem>
+            <span>Max Supply:</span>
+            <span>{tickersData?.max_supply}</span>
+          </OverviewItem>
+        </Overview>
+        <Tabs>
+          <Tab isActive={chartMatch !== null}>
+            <Link to={`/${coinId}/chart`}>Chart</Link>
+          </Tab>
+          <Tab isActive={priceMatch !== null}>
+            <Link to={`/${coinId}/price`}>Price</Link>
+          </Tab>
+        </Tabs>
+        <Routes>
+          <Route path= "chart" element={<Chart coinId={coinId} />} />
+          <Route path= "price" element={<Price />} />
+        </Routes>
+      </>
+    )}
+      </Container>
+  );
 }
 
 export default Coin;
