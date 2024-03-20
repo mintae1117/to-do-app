@@ -1,51 +1,35 @@
-import { useForm } from "react-hook-form";
-import { atom, useRecoilState } from "recoil";
+import { useRecoilValue } from "recoil";
+import { categoryState, toDoSelector } from "../atoms";
+import CategorySelctor from "./CategorySelector";
+import CreateToDo from "./CreateToDo";
+import ToDo from "./ToDo";
+import styled from "styled-components";
 
-interface IForm {
-  toDo: string;
-}
-
-interface IToDo {
-  text: string;
-  id: number;
-  category: "TO_DO" | "DOING" | "DONE";
-}
-
-const toDoState = atom<IToDo[]>({
-  key: "toDo",
-  default: [],
-});
+const Biggerh1 = styled.h1`
+  font-size: 30px;
+`;
+const Colorspan = styled.span`
+  color: tomato;
+`;
 
 function ToDoList() {
-  const [toDos, setToDos] = useRecoilState(toDoState);
-  const { register, handleSubmit, setValue } = useForm<IForm>();
-  const handleValid = ({ toDo }: IForm) => {
-    setToDos((oldToDos) => [
-      { text: toDo, id: Date.now(), category: "TO_DO" },
-      ...oldToDos,
-    ]);
-    setValue("toDo", "");
-  };
-  return (
-    <div>
-      <h1>To Dos</h1>
-      <hr />
-      <form onSubmit={handleSubmit(handleValid)}>
-        <input
-          {...register("toDo", {
-            required: "Please write a To Do",
-          })}
-          placeholder="Write a to do"
-        />
-        <button>Add</button>
-      </form>
-      <ul>
-        {toDos.map((toDo) => (
-          <li key={toDo.id}>{toDo.text}</li>
-        ))}
-      </ul>
-    </div>
-  );
+    const toDos = useRecoilValue(toDoSelector);
+    const category = useRecoilValue(categoryState);
+
+    return (
+      <div>
+        <CategorySelctor />
+        <div>
+          <div>
+            <Biggerh1><Colorspan>{category}</Colorspan> Category</Biggerh1>
+            <CreateToDo />
+            {toDos?.map((toDo) => (
+                <ToDo key={toDo.id} {...toDo} />
+            ))}
+          </div>
+        </div>
+      </div>
+    );
 }
 
 export default ToDoList;
