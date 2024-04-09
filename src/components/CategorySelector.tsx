@@ -4,7 +4,7 @@ import { styled } from "styled-components";
 import { categoriesState, categoryState } from "../atoms";
 
 const CategoryDiv = styled.div`
-    width: 100px;
+    width: 100%;
     color: whitesmoke;
     cursor: pointer;
     &:hover {

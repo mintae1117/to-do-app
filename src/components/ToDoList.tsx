@@ -8,8 +8,18 @@ import styled from "styled-components";
 const Biggerh1 = styled.h1`
   font-size: 30px;
 `;
+
 const Colorspan = styled.span`
   color: tomato;
+`;
+
+const TodoWrapper = styled.div`
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  align-items: center;
 `;
 
 function ToDoList() {
@@ -17,7 +27,7 @@ function ToDoList() {
     const category = useRecoilValue(categoryState);
 
     return (
-      <div>
+      <TodoWrapper>
         <CategorySelctor />
         <div>
           <div>
@@ -28,7 +38,7 @@ function ToDoList() {
             ))}
           </div>
         </div>
-      </div>
+      </TodoWrapper>
     );
 }
 
